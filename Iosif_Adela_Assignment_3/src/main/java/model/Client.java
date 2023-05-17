@@ -1,6 +1,11 @@
 package model;
 
 public class Client {
+    private int clientId;
+    private String name;
+    private String email;
+    private String phoneNumber;
+    private String address;
     public int getClientId() {
         return clientId;
     }
@@ -41,9 +46,5 @@ public class Client {
         this.address = address;
     }
 
-    private int clientId;
-    private String name;
-    private String email;
-    private String phoneNumber;
-    private String address;
+
 }
