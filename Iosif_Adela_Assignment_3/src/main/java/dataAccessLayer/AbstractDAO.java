@@ -10,23 +10,47 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import connection.ConnectionFactory;
 
-public class AbstractDAO<T> {
-    protected static final Logger LOGGER = Logger.getLogger(AbstractDAO.class.getName());
+/**
+ * Clasa generica folosita pt accesarea bazei de date
+ * @param <T>
+ */
+public abstract class AbstractDAO<T> {
 
     private final Class<T> type;
 
-    @SuppressWarnings("unchecked")
+    /**
+     * Constructor care extrage clasa model pt care se implementeaza operatiile.
+     *
+     */
+
     public AbstractDAO() {
         this.type = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 
     }
 
-    private String createSelectQuery(String field) {
+    /**
+     * Metoda creeaza o interogare generica de select all
+     * @return textul interogarii
+     */
+    private String createSelectQuery() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT ");
+        sb.append(" * ");
+        sb.append(" FROM ");
+        sb.append(type.getSimpleName());
+        return sb.toString();
+    }
+
+    /**
+     * Interogare generica conditionata
+     * Cauta in baza de date dupa campul primit
+     * @param field - o coloana dupa care se va face cautarea in bd
+     * @return textul selectat dupa interogare
+     */
+    private String createSelectQueryField(String field) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT ");
         sb.append(" * ");
@@ -36,16 +60,47 @@ public class AbstractDAO<T> {
         return sb.toString();
     }
 
+    /**
+     * Metoda generica
+     * Gaseste toate inregistrarile din tabela corespunzatoare
+     * clasei generice
+     * @return
+     */
     public List<T> findAll() {
-        // TODO:
+        Connection connection = null;
+        PreparedStatement st = null;
+        ResultSet resSet = null;
+        String q = createSelectQuery();
+
+        try{
+            connection = ConnectionFactory.getConnection();
+            st = connection.prepareStatement(q);
+            resSet = st.executeQuery();
+
+            return createObjects(resSet);
+        }
+        catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        finally{
+            ConnectionFactory.close(resSet);
+            ConnectionFactory.close(st);
+            ConnectionFactory.close(connection);
+        }
         return null;
     }
 
+    /**
+     * Metoda generica care gaseste o inregistrare in baza de date
+     * dupa id-ul furnizat
+     * @param id
+     * @return
+     */
     public T findById(int id) {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        String query = createSelectQuery("id");
+        String query = createSelectQueryField("id");
         try {
             connection = ConnectionFactory.getConnection();
             statement = connection.prepareStatement(query);
@@ -54,7 +109,7 @@ public class AbstractDAO<T> {
 
             return createObjects(resultSet).get(0);
         } catch (SQLException e) {
-            LOGGER.log(Level.WARNING, type.getName() + "DAO:findById " + e.getMessage());
+           System.out.println(e.getMessage());
         } finally {
             ConnectionFactory.close(resultSet);
             ConnectionFactory.close(statement);
@@ -63,6 +118,12 @@ public class AbstractDAO<T> {
         return null;
     }
 
+
+    /**
+     * Creeaza un obiect pt clasa generica, pe baza val date
+     * @param resultSet - rezultatul interogarii
+     * @return
+     */
     private List<T> createObjects(ResultSet resultSet) {
         List<T> list = new ArrayList<T>();
         Constructor[] ctors = type.getDeclaredConstructors();
@@ -108,8 +169,49 @@ public class AbstractDAO<T> {
         return t;
     }
 
-    public T update(T t) {
-        // TODO:
-        return t;
+    /**
+     * ??
+     *
+     * @param field - coloana din bd care trebuie modificata
+     * @param id - id-ul obiectului care trebuie modificat
+     * @return
+     */
+    private String createUpdateQ(String field, Integer id){
+        StringBuilder sb = new StringBuilder();
+        sb.append("UPDATE ");
+        sb.append(type.getSimpleName());
+        sb.append("SET" + field + "=?");
+        sb.append(" WHERE id=" + id);
+        return sb.toString();
+    }
+
+    /**
+     * Metoda generica
+     * Face update la o inreg din baza de date
+     * @param field - numele campului care trebuie modificat
+     * @param val - valoarea actualizata
+     * @param id - id-ul inregistrarii initiale
+     */
+    public void update(String field, String val, Integer id) {
+        T obj = findById(id);
+        if(obj == null){
+            return;
+        }
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        String query = createUpdateQ(field, id);
+        try {
+            connection = ConnectionFactory.getConnection();
+            statement = connection.prepareStatement(query);
+            statement.setString(1, val);
+            statement.execute();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            ConnectionFactory.close(statement);
+            ConnectionFactory.close(connection);
+        }
     }
 }
