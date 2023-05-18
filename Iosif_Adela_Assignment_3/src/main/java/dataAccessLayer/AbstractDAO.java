@@ -61,6 +61,21 @@ public abstract class AbstractDAO<T> {
     }
 
     /**
+     * Primeste id-ul inregistrarii care trebuie sters din bd
+     * Se creeaza o interogare generica de stergere
+     * @param id
+     * @return
+     */
+    private String createDeleteQ(Integer id){
+        StringBuilder s = new StringBuilder();
+        s.append("DELETE FROM");
+        s.append(type.getSimpleName());
+        s.append("WHERE id="+id);
+
+        return s.toString();
+    }
+
+    /**
      * Metoda generica
      * Gaseste toate inregistrarile din tabela corespunzatoare
      * clasei generice
@@ -164,10 +179,13 @@ public abstract class AbstractDAO<T> {
         return list;
     }
 
-    public T insert(T t) {
-        // TODO:
-        return t;
-    }
+    /**
+     * Metoda abstracta
+     * Primeste un obiect al clasei generice
+     * Incearca sa insereze obiectul primit in baza de date
+     * @param t - inregistrarea care trebuie inserata in baza de date
+     */
+    public abstract void insert(T t);
 
     /**
      * ??
@@ -212,6 +230,37 @@ public abstract class AbstractDAO<T> {
         } finally {
             ConnectionFactory.close(statement);
             ConnectionFactory.close(connection);
+        }
+    }
+
+    /**
+     * Metoda generica
+     * Sterge inregistrarea cu id-ul dat
+     * @param id
+     * @return - flag ca sa stim daca s-a efectuat sau nu operatia
+     */
+    public boolean delete(Integer id){
+        T t = findById(id);
+
+        if(t == null){
+            return false;
+        }
+        Connection c = null;
+        PreparedStatement s = null;
+        String q = createDeleteQ(id);
+
+        try{
+            c = ConnectionFactory.getConnection();
+            s = c.prepareStatement(q);
+            s.execute();
+            return true;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        finally {
+            ConnectionFactory.close(s);
+            ConnectionFactory.close(c);
         }
     }
 }
