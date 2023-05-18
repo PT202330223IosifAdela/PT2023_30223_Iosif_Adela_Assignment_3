@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connection.ConnectionFactory;
+import model.Products;
 
 /**
  * Clasa generica folosita pt accesarea bazei de date
@@ -263,4 +264,5 @@ public abstract class AbstractDAO<T> {
             ConnectionFactory.close(c);
         }
     }
+
 }

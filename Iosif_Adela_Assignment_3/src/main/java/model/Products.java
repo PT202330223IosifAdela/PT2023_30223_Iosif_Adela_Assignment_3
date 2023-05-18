@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 public class Products {
     private int productId;
     private String name;
+    private int stock;
 
     public int getStock() {
         return stock;
@@ -14,7 +15,6 @@ public class Products {
         this.stock = stock;
     }
 
-    private int stock;
 
     public int getProductId() {
         return productId;
@@ -33,14 +33,4 @@ public class Products {
     }
 
 
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    private String description;
 }
