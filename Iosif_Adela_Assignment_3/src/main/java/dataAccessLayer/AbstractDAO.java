@@ -69,9 +69,9 @@ public abstract class AbstractDAO<T> {
      */
     private String createDeleteQ(Integer id){
         StringBuilder s = new StringBuilder();
-        s.append("DELETE FROM");
+        s.append("DELETE FROM ");
         s.append(type.getSimpleName());
-        s.append("WHERE id="+id);
+        s.append(" WHERE id=" + id);
 
         return s.toString();
     }

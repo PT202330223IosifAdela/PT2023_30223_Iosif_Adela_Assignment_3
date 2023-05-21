@@ -7,18 +7,19 @@ public class Main {
     public static void main(String[] args) {
         ProductDAO pr = new ProductDAO();
         Products p1 = new Products();
-       /* p1.setName("Morcovi");
+        p1.setName("Morcovi");
         p1.setStock(225);
-        pr.insert(p1);
+       // pr.insert(p1);
 
         Products p2 = new Products();
         p2.setName("Telina");
         p2.setStock(23);
-        pr.insert(p2);*/
+        //pr.insert(p2);
+        pr.delete(2);
 
-        p1 = pr.findById(1);
+        //p1 = pr.findById(1);
 
-        pr.decrementStock(5, p1);
+       // pr.decrementStock(5, p1);
 
 
 
