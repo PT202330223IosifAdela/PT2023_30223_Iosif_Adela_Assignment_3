@@ -3,26 +3,25 @@ package model;
 import java.math.BigDecimal;
 
 public class Products {
-    private int productId;
+    private Integer id;
     private String name;
-    private int stock;
+    private Integer stock;
+    public Integer getId() {
+        return id;
+    }
 
-    public int getStock() {
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getStock() {
         return stock;
     }
 
-    public void setStock(int stock) {
+    public void setStock(Integer stock) {
         this.stock = stock;
     }
 
-
-    public int getProductId() {
-        return productId;
-    }
-
-    public void setProductId(int productId) {
-        this.productId = productId;
-    }
 
     public String getName() {
         return name;

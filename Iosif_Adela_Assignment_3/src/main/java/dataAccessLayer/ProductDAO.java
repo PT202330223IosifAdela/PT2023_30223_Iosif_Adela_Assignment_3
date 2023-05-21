@@ -9,21 +9,19 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class ProductDAO extends AbstractDAO<Products>{
-    private int productId;
-    private String name;
-    private int stock;
 
     /**
      * Metoda care decrementeaza produsele din stoc
      * @param cantitate - cantitatea care trebuie scazuta din stocul unui anumit produs
      */
-    public void decrementStock(int cantitate){
-        if(stock >= cantitate){
-            stock = stock - cantitate;
+    public void decrementStock(int cantitate, Products p){
+        if(p.getStock() >= cantitate){
+            p.setStock(p.getStock() - cantitate);
         }
         else{
             System.out.println("Stoc insuficient"); //eroare in interfata
         }
+        update("stock", p.getStock().toString(),p.getId());
     }
 
     @Override

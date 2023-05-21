@@ -195,14 +195,17 @@ public abstract class AbstractDAO<T> {
      * @param id - id-ul obiectului care trebuie modificat
      * @return
      */
-    private String createUpdateQ(String field, Integer id){
+    private String createUpdateQ(String field, Integer id) {
         StringBuilder sb = new StringBuilder();
         sb.append("UPDATE ");
         sb.append(type.getSimpleName());
-        sb.append("SET" + field + "=?");
-        sb.append(" WHERE id=" + id);
+        sb.append(" SET ");
+        sb.append(field);
+        sb.append(" = ?");
+        sb.append(" WHERE id = " + id);
         return sb.toString();
     }
+
 
     /**
      * Metoda generica
