@@ -16,7 +16,9 @@ import model.Products;
 
 /**
  * Clasa generica folosita pt accesarea bazei de date
- * @param <T>
+ * Contine tehnici de reflectie
+ * Defineste operatiile comune pentru accesarea unui tabel: inserare, update, stergere
+ * @param <T> - operatiile sunt definite pe tipul generic
  */
 public abstract class AbstractDAO<T> {
 
@@ -29,7 +31,6 @@ public abstract class AbstractDAO<T> {
 
     public AbstractDAO() {
         this.type = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-
     }
 
     /**
@@ -189,8 +190,7 @@ public abstract class AbstractDAO<T> {
     public abstract void insert(T t);
 
     /**
-     * ??
-     *
+     * Se creeaza o interogare de update
      * @param field - coloana din bd care trebuie modificata
      * @param id - id-ul obiectului care trebuie modificat
      * @return

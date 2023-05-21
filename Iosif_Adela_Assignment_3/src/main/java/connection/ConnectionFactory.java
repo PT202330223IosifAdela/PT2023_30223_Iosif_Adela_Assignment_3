@@ -9,6 +9,12 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Clasa contine:
+ * numele driver-ului initializat prin reflection
+ * locatia bazei de date - DBURL
+ * user-ul si parola pentru accesarea serverului MySql
+ */
 public class ConnectionFactory {
 
     private static final Logger LOGGER = Logger.getLogger(ConnectionFactory.class.getName());
