@@ -4,11 +4,11 @@ public class Orders {
     private int id;
     private int quantity;
 
-    public int getOrderId() {
+    public int getId() {
         return id;
     }
 
-    public void setOrderId(int orderId) {
+    public void setId(int orderId) {
         this.id = orderId;
     }
 

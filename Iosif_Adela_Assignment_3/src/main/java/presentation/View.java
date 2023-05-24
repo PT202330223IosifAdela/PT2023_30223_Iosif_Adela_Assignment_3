@@ -1,12 +1,14 @@
 package presentation;
 
+import dataAccessLayer.ClientDAO;
+import model.Clients;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-//import static jdk.internal.misc.OSEnvironment.initialize;
+import javax.swing.JOptionPane;
 
 public class View {
     private JFrame startFrame;
@@ -23,12 +25,12 @@ public class View {
     }
 
     private void initializare() {
-        // Create the client window
+        //fereastra pt client
         clientFrame = new JFrame("Client Operations");
         clientFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         clientFrame.setSize(800, 600);
 
-        // Create client table and model
+        //Create client table and model
         clientTableModel = new DefaultTableModel();
         clientTableModel.addColumn("id");
         clientTableModel.addColumn("name");
@@ -38,13 +40,25 @@ public class View {
 
         clientFrame.getContentPane().add(clientScrollPane);
 
-        // Create client operation buttons
+        //Butoane pt operatii pe clienti
         JPanel clientButtonPanel = new JPanel();
 
         JButton addClientButton = new JButton("Add Client");
         addClientButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Add new client logic
+                String name = JOptionPane.showInputDialog(clientFrame, "Enter client name:");
+                String phoneNumber = JOptionPane.showInputDialog(clientFrame, "Enter client phone number:");
+
+                //operatii baza de date
+                ClientDAO cl = new ClientDAO();
+
+                Clients c1 = new Clients();
+                c1.setName(name);
+                c1.setPhoneNumber(phoneNumber);
+                cl.insert(c1);
+
+                //adaugare client in lista
+                clientTableModel.addRow(new Object[]{clientTableModel.getRowCount() + 1, name, phoneNumber});
             }
         });
 
@@ -64,7 +78,37 @@ public class View {
         JButton editClientButton = new JButton("Edit Client");
         editClientButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Edit client logic
+                //update client
+
+                int selectedRowIndex = clientTable.getSelectedRow();
+
+                // Check if a row is selected
+                if (selectedRowIndex != -1) {
+                    // Get the current values from the selected row
+                    int clientId = (int) clientTableModel.getValueAt(selectedRowIndex, 0);
+                    String currentName = (String) clientTableModel.getValueAt(selectedRowIndex, 1);
+                    String currentPhoneNumber = (String) clientTableModel.getValueAt(selectedRowIndex, 2);
+
+                    // Display input dialogs to get the updated name and phone number
+                    String updatedName = JOptionPane.showInputDialog(clientFrame, "Enter updated name:", currentName);
+                    String updatedPhoneNumber = JOptionPane.showInputDialog(clientFrame, "Enter updated phone number:", currentPhoneNumber);
+
+                    // Perform database update operation
+                    ClientDAO cl = new ClientDAO();
+                    Clients updatedClient = new Clients();
+
+                    updatedClient.setName(updatedName);
+                    updatedClient.setPhoneNumber(updatedPhoneNumber);
+                    cl.update(updatedName, updatedPhoneNumber, clientId);
+
+                    //actualizare tabel
+                    clientTableModel.setValueAt(updatedName, selectedRowIndex, 1);
+                    clientTableModel.setValueAt(updatedPhoneNumber, selectedRowIndex, 2);
+
+                    JOptionPane.showMessageDialog(clientFrame, "Update client bun!");
+                } else {
+                    JOptionPane.showMessageDialog(clientFrame, "Va rog selectati un client!");
+                }
             }
         });
         clientButtonPanel.add(editClientButton);
@@ -72,19 +116,19 @@ public class View {
         JButton deleteClientButton = new JButton("Delete Client");
         deleteClientButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Delete client logic
+                //delete????
             }
         });
         clientButtonPanel.add(deleteClientButton);
 
         clientFrame.getContentPane().add(clientButtonPanel, BorderLayout.SOUTH);
 
-        // Create the product window
+        //fereastra produse
         productFrame = new JFrame("Product Operations");
         productFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         productFrame.setSize(800, 600);
 
-        // Create product table and model
+        //Create product table and model
         productTableModel = new DefaultTableModel();
         productTableModel.addColumn("id");
         productTableModel.addColumn("name");
@@ -94,13 +138,13 @@ public class View {
 
         productFrame.getContentPane().add(productScrollPane);
 
-        // Create product operation buttons
+        //Butoane operatii produse
         JPanel productButtonPanel = new JPanel();
 
         JButton addProductButton = new JButton("Add Product");
         addProductButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Add new product logic
+                //to doo
             }
         });
 
@@ -120,7 +164,7 @@ public class View {
         JButton editProductButton = new JButton("Edit Product");
         editProductButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Edit product logic
+                //to doooo
             }
         });
         productButtonPanel.add(editProductButton);
@@ -128,32 +172,32 @@ public class View {
         JButton deleteProductButton = new JButton("Delete Product");
         deleteProductButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Delete product logic
+                //deleeteeee??
             }
         });
         productButtonPanel.add(deleteProductButton);
 
         productFrame.getContentPane().add(productButtonPanel, BorderLayout.SOUTH);
 
-        // Create the order window
+        //fereastra orders
         orderFrame = new JFrame("Create Product Order");
         orderFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        orderFrame.setSize(400, 200);
+        orderFrame.setSize(600, 400);
 
         JPanel orderPanel = new JPanel();
 
         JComboBox<String> productComboBox = new JComboBox<>();
-        // Populate productComboBox with existing products
+        //populare productComboBox cu produse existente
 
         JComboBox<String> clientComboBox = new JComboBox<>();
-        // Populate clientComboBox with existing clients
+        //populare clientComboBox cu clienti existenti
 
         JTextField quantityTextField = new JTextField(10);
 
         JButton createOrderButton = new JButton("Create Order");
         createOrderButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Create order logic
+                //to do
             }
         });
 

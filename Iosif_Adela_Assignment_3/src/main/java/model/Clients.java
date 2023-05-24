@@ -4,11 +4,11 @@ public class Clients {
     private int id;
     private String name;
     private String phoneNumber;
-    public int getClientId() {
+    public int getId() {
         return id;
     }
 
-    public void setClientId(int clientId) {
+    public void setId(int clientId) {
         this.id = clientId;
     }
 
