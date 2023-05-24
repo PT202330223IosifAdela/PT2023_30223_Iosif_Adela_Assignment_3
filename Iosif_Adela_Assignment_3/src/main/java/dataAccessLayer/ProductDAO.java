@@ -35,7 +35,7 @@ public class ProductDAO extends AbstractDAO<Products>{
            insStatement.setInt(2, t.getStock());
            insStatement.execute();
        } catch (SQLException e) {
-            System.out.println("Nu se poate insera!");
+            System.out.println("Nu se poate insera in tabela products!");
        }
        finally {
            ConnectionFactory.close(insStatement);
