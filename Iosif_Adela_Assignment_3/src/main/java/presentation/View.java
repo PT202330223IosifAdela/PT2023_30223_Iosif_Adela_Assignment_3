@@ -131,6 +131,7 @@ public class View {
                     List<Clients> clientList1 = clientBll.findAll();
                     JTable aux = tableR.create1(clientList1);
                     clientTable.setModel(aux.getModel());
+
                 } else {
                     JOptionPane.showMessageDialog(View.this.clientFrame, "Va rog selectati un client!");
                 }
@@ -227,6 +228,7 @@ public class View {
         this.orderFrame = new JFrame("Create Product Order");
         this.orderFrame.setDefaultCloseOperation(3);
         this.orderFrame.setSize(800, 600);
+
         JPanel orderPanel = new JPanel();
 
         ///fereastra noua pt orders
@@ -237,12 +239,14 @@ public class View {
         this.orderTable = new JTable();
         Reflection tableR1 = new Reflection();
         OrderBLL orderDao = new OrderBLL();
+
         List<Orders> orderList1 = orderDao.findAll();
         JTable aux1 = tableR1.create1(orderList1);
         orderTable.setModel(aux1.getModel());
 
         JScrollPane orderScrollPane = new JScrollPane(this.orderTable);
         this.order2Frame.getContentPane().add(orderScrollPane);
+
         ///
 
         final JComboBox<String> productComboBox = new JComboBox();
