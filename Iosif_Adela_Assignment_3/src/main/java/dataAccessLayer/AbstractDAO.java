@@ -208,10 +208,10 @@ public abstract class AbstractDAO<T> {
 
 
     /**
-     * Metoda generica
+     * Metoda generica, face update la un singur camp odata
      * Face update la o inreg din baza de date
      * @param field - numele campului care trebuie modificat
-     * @param val - valoarea actualizata
+     * @param val - valoarea actualizata/noua
      * @param id - id-ul inregistrarii initiale
      */
     public void update(String field, String val, Integer id) {
@@ -240,7 +240,7 @@ public abstract class AbstractDAO<T> {
     /**
      * Metoda generica
      * Sterge inregistrarea cu id-ul dat
-     * @param id
+     * @param id - identificatorul inregistrarii care trebuie sterse
      * @return - flag ca sa stim daca s-a efectuat sau nu operatia
      */
     public boolean delete(Integer id){

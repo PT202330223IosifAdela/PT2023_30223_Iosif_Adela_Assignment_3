@@ -114,7 +114,25 @@ public class View {
         JButton deleteClientButton = new JButton("Delete Client");
         deleteClientButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //delete????
+                //delete client
+                int selectedRowIndex = clientTable.getSelectedRow();
+
+                //verificam daca s-a selectat un client
+                if (selectedRowIndex != -1) {
+                    //ia id-ul clientului din randul curent selectat
+                    int clientId = (int) clientTableModel.getValueAt(selectedRowIndex, 0);
+
+                    //stergere din interfata
+                    clientTableModel.removeRow(selectedRowIndex);
+
+                    //stergere in database
+                    ClientDAO cl = new ClientDAO();
+                    cl.delete(clientId);
+
+                    JOptionPane.showMessageDialog(clientFrame, "Stergerea clientului a fost facuta cu succes!");
+                } else {
+                    JOptionPane.showMessageDialog(clientFrame, "Va rog selectati un client!");
+                }
             }
         });
         clientButtonPanel.add(deleteClientButton);
