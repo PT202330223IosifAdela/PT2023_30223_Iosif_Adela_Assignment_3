@@ -24,9 +24,11 @@ public class Main {
         ClientDAO cl = new ClientDAO();
 
         Clients c1 = new Clients();
-        c1.setName("Marcel");
+       /* c1.setName("Marcel");
         c1.setPhoneNumber("0726373738");
-        cl.insert(c1);
+        cl.insert(c1);*/
+
+        cl.update("name", "Viorica", 2);
 
 
         OrderDAO or = new OrderDAO();

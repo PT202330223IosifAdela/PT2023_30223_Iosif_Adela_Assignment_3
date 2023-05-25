@@ -20,7 +20,6 @@ public class Clients {
         this.name = name;
     }
 
-
     public String getPhoneNumber() {
         return phoneNumber;
     }

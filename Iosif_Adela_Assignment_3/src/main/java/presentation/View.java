@@ -79,33 +79,31 @@ public class View {
         editClientButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 //update client
-
                 int selectedRowIndex = clientTable.getSelectedRow();
 
-                // Check if a row is selected
+                //verificam daca s-a selectat un client
                 if (selectedRowIndex != -1) {
-                    // Get the current values from the selected row
+                    //ia valorile din randul curent selectat
                     int clientId = (int) clientTableModel.getValueAt(selectedRowIndex, 0);
                     String currentName = (String) clientTableModel.getValueAt(selectedRowIndex, 1);
                     String currentPhoneNumber = (String) clientTableModel.getValueAt(selectedRowIndex, 2);
 
-                    // Display input dialogs to get the updated name and phone number
+                    //ferestre pentru introducere update pt nume si nr de tel
                     String updatedName = JOptionPane.showInputDialog(clientFrame, "Enter updated name:", currentName);
                     String updatedPhoneNumber = JOptionPane.showInputDialog(clientFrame, "Enter updated phone number:", currentPhoneNumber);
-
-                    // Perform database update operation
-                    ClientDAO cl = new ClientDAO();
-                    Clients updatedClient = new Clients();
-
-                    updatedClient.setName(updatedName);
-                    updatedClient.setPhoneNumber(updatedPhoneNumber);
-                    cl.update(updatedName, updatedPhoneNumber, clientId);
 
                     //actualizare tabel
                     clientTableModel.setValueAt(updatedName, selectedRowIndex, 1);
                     clientTableModel.setValueAt(updatedPhoneNumber, selectedRowIndex, 2);
 
-                    JOptionPane.showMessageDialog(clientFrame, "Update client bun!");
+                    //update in database
+                    ClientDAO cl = new ClientDAO();
+
+                    //update e doar pe un camp odata
+                    cl.update("name", updatedName, clientId);
+                    cl.update("phoneNumber", updatedPhoneNumber, clientId);
+
+                    JOptionPane.showMessageDialog(clientFrame, "Update client done!");
                 } else {
                     JOptionPane.showMessageDialog(clientFrame, "Va rog selectati un client!");
                 }
