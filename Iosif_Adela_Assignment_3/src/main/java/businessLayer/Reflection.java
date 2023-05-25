@@ -6,7 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Reflection<T> {
-    public JTable create(List<T> list) {
+    /**
+     * Se face reflection
+     * Se creeaza un tabel de elemente dintr-o lista de obiecte, iterand pe toate campurile clasei
+     * si inserand toate valorile
+     * @param list - lista de obiecte
+     * @return tabel de elemente
+     */
+    public JTable create1(List<T> list) {
+        //parcurgere elemente si creare vector
         List<String> numeCol = new ArrayList<>();
         int i = 0;
 

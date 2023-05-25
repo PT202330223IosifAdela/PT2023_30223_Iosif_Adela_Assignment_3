@@ -21,12 +21,14 @@ public class Main {
         pr.insert(p2);
         //pr.delete(2);
 
-        ClientDAO cl = new ClientDAO();
+        pr.update("stock","555", 10);
+
+       /* ClientDAO cl = new ClientDAO();
 
         Clients c1 = new Clients();
        /* c1.setName("Marcel");
         c1.setPhoneNumber("0726373738");
-        cl.insert(c1);*/
+        cl.insert(c1);
 
         cl.update("name", "Viorica", 2);
 
@@ -34,7 +36,7 @@ public class Main {
         OrderDAO or = new OrderDAO();
         Orders o1 = new Orders();
         o1.setQuantity(10);
-        or.insert(o1);
+        or.insert(o1);*/
 
         //p1 = pr.findById(1);
 
