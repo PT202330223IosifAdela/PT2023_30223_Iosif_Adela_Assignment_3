@@ -18,14 +18,16 @@ public class Reflection<T> {
         List<String> numeCol = new ArrayList<>();
         int i = 0;
 
-        for (Field f : list.get(0).getClass().getDeclaredFields()) {
-            try {
-                numeCol.add(f.getName());
-                i++;
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            }
-        }
+       if(!list.isEmpty()) {
+           for (Field f : list.get(0).getClass().getDeclaredFields()) {
+               try {
+                   numeCol.add(f.getName());
+                   i++;
+               } catch (IllegalArgumentException e) {
+                   e.printStackTrace();
+               }
+           }
+       }
         Object[][] table = new Object[list.size()][i];
         int  j = 0;
         for(T  obj: list){

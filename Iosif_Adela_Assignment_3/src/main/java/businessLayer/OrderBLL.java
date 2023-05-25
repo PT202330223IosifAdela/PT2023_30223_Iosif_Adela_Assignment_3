@@ -6,7 +6,7 @@ import model.Orders;
 import java.util.List;
 
 public class OrderBLL {
-    OrderDAO orderdao;
+    private OrderDAO orderdao = new OrderDAO();
 
     public void insertOrder(Orders o) {
         orderdao.insert(o);

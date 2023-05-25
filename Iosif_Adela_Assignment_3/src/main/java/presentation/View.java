@@ -1,9 +1,11 @@
 package presentation;
 
-import dataAccessLayer.ClientDAO;
-import dataAccessLayer.OrderDAO;
-import dataAccessLayer.ProductDAO;
+import businessLayer.ClientBLL;
+import businessLayer.OrderBLL;
+import businessLayer.ProductBLL;
+
 import businessLayer.Reflection;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -24,6 +26,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+
 import model.Clients;
 import model.Orders;
 import model.Products;
@@ -38,9 +41,6 @@ public class View {
     private JTable clientTable;
     private JTable productTable;
     private JTable orderTable;
-    private DefaultTableModel clientTableModel;
-    private DefaultTableModel productTableModel;
-    private DefaultTableModel orderTableModel;
 
     public View() {
         this.initializare();
@@ -52,21 +52,15 @@ public class View {
         this.clientFrame.setSize(800, 600);
         String[] columns = {"id", "name", "phoneNumber"};
 
-        ClientDAO clientDAO = new ClientDAO();
+        ClientBLL clientBll = new ClientBLL();
 
         this.clientTable = new JTable();
         Reflection tableR = new Reflection();
 
-        List<Clients> clientList1 = clientDAO.findAll();
+        List<Clients> clientList1 = clientBll.findAll();
         JTable aux = tableR.create1(clientList1);
-
-        //this.clientTableModel = new DefaultTableModel(columns, clientList1.toArray());
         clientTable.setModel(aux.getModel());
 
-        //this.clientTableModel.addColumn("id");
-        //this.clientTableModel.addColumn("name");
-        //this.clientTableModel.addColumn("phoneNumber");
-        //this.clientTable = new JTable(this.clientTableModel);
         JScrollPane clientScrollPane = new JScrollPane(this.clientTable);
         this.clientFrame.getContentPane().add(clientScrollPane);
         JPanel clientButtonPanel = new JPanel();
@@ -75,12 +69,15 @@ public class View {
             public void actionPerformed(ActionEvent e) {
                 String name = JOptionPane.showInputDialog(View.this.clientFrame, "Enter client name:");
                 String phoneNumber = JOptionPane.showInputDialog(View.this.clientFrame, "Enter client phone number:");
-                ClientDAO cl = new ClientDAO();
+                ClientBLL cl = new ClientBLL();
                 Clients c1 = new Clients();
                 c1.setName(name);
                 c1.setPhoneNumber(phoneNumber);
-                cl.insert(c1);
-                View.this.clientTableModel.addRow(new Object[]{View.this.clientTableModel.getRowCount() + 1, name, phoneNumber});
+                cl.insertClient(c1);
+
+                List<Clients> clientList1 = clientBll.findAll();
+                JTable aux = tableR.create1(clientList1);
+                clientTable.setModel(aux.getModel());
             }
         });
         JButton backButton = new JButton("Back");
@@ -98,17 +95,21 @@ public class View {
             public void actionPerformed(ActionEvent e) {
                 int selectedRowIndex = View.this.clientTable.getSelectedRow();
                 if (selectedRowIndex != -1) {
-                    int clientId = (Integer)View.this.clientTableModel.getValueAt(selectedRowIndex, 0);
-                    String currentName = (String)View.this.clientTableModel.getValueAt(selectedRowIndex, 1);
-                    String currentPhoneNumber = (String)View.this.clientTableModel.getValueAt(selectedRowIndex, 2);
+                    int clientId = (Integer) View.this.clientTable.getValueAt(selectedRowIndex, 0);
+                    String currentName = (String) View.this.clientTable.getValueAt(selectedRowIndex, 1);
+                    String currentPhoneNumber = (String) View.this.clientTable.getValueAt(selectedRowIndex, 2);
                     String updatedName = JOptionPane.showInputDialog(View.this.clientFrame, "Enter updated name:", currentName);
                     String updatedPhoneNumber = JOptionPane.showInputDialog(View.this.clientFrame, "Enter updated phone number:", currentPhoneNumber);
-                    View.this.clientTableModel.setValueAt(updatedName, selectedRowIndex, 1);
-                    View.this.clientTableModel.setValueAt(updatedPhoneNumber, selectedRowIndex, 2);
-                    ClientDAO cl = new ClientDAO();
-                    cl.update("name", updatedName, clientId);
-                    cl.update("phoneNumber", updatedPhoneNumber, clientId);
+                    View.this.clientTable.setValueAt(updatedName, selectedRowIndex, 1);
+                    View.this.clientTable.setValueAt(updatedPhoneNumber, selectedRowIndex, 2);
+                    ClientBLL cl = new ClientBLL();
+                    cl.updateClient("name", updatedName, clientId);
+                    cl.updateClient("phoneNumber", updatedPhoneNumber, clientId);
                     JOptionPane.showMessageDialog(View.this.clientFrame, "Update client done!");
+
+                    List<Clients> clientList1 = clientBll.findAll();
+                    JTable aux = tableR.create1(clientList1);
+                    clientTable.setModel(aux.getModel());
                 } else {
                     JOptionPane.showMessageDialog(View.this.clientFrame, "Va rog selectati un client!");
                 }
@@ -121,15 +122,18 @@ public class View {
             public void actionPerformed(ActionEvent e) {
                 int selectedRowIndex = View.this.clientTable.getSelectedRow();
                 if (selectedRowIndex != -1) {
-                    int clientId = (Integer)View.this.clientTableModel.getValueAt(selectedRowIndex, 0);
-                    View.this.clientTableModel.removeRow(selectedRowIndex);
-                    ClientDAO cl = new ClientDAO();
-                    cl.delete(clientId);
+                    int clientId = (Integer) View.this.clientTable.getValueAt(selectedRowIndex, 0);
+                    //View.this.clientTable.remove(selectedRowIndex);
+                    ClientBLL cl = new ClientBLL();
+                    cl.deleteClient(clientId);
                     JOptionPane.showMessageDialog(View.this.clientFrame, "Stergerea clientului a fost facuta cu succes!");
+
+                    List<Clients> clientList1 = clientBll.findAll();
+                    JTable aux = tableR.create1(clientList1);
+                    clientTable.setModel(aux.getModel());
                 } else {
                     JOptionPane.showMessageDialog(View.this.clientFrame, "Va rog selectati un client!");
                 }
-
             }
         });
         clientButtonPanel.add(deleteClientButton);
@@ -137,22 +141,15 @@ public class View {
         this.productFrame = new JFrame("Product Operations");
         this.productFrame.setDefaultCloseOperation(3);
         this.productFrame.setSize(800, 600);
-        this.productTableModel = new DefaultTableModel();
 
-
-        ProductDAO productDAO = new ProductDAO();
+        ProductBLL productbll = new ProductBLL();
         this.productTable = new JTable();
         Reflection tableR2 = new Reflection();
 
-        List<Products> prodList1 = productDAO.findAll();
+        List<Products> prodList1 = productbll.findAll();
         JTable aux2 = tableR2.create1(prodList1);
         productTable.setModel(aux2.getModel());
 
-
-        /*this.productTableModel.addColumn("id");
-        this.productTableModel.addColumn("name");
-        this.productTableModel.addColumn("stock");
-        this.productTable = new JTable(this.productTableModel);*/
         JScrollPane productScrollPane = new JScrollPane(this.productTable);
         this.productFrame.getContentPane().add(productScrollPane);
         JPanel productButtonPanel = new JPanel();
@@ -161,12 +158,14 @@ public class View {
             public void actionPerformed(ActionEvent e) {
                 String name = JOptionPane.showInputDialog(View.this.clientFrame, "Enter product name:");
                 Integer stock = Integer.valueOf(JOptionPane.showInputDialog(View.this.clientFrame, "Enter product stock:"));
-                ProductDAO pr = new ProductDAO();
+                ProductBLL pr = new ProductBLL();
                 Products p1 = new Products();
                 p1.setName(name);
                 p1.setStock(stock);
-                pr.insert(p1);
-                View.this.productTableModel.addRow(new Object[]{View.this.productTableModel.getRowCount() + 1, name, stock});
+                pr.insertProduct(p1);
+                List<Products> prodList1 = productbll.findAll();
+                JTable aux2 = tableR2.create1(prodList1);
+                productTable.setModel(aux2.getModel());
             }
         });
         JButton backButton2 = new JButton("Back");
@@ -184,21 +183,23 @@ public class View {
             public void actionPerformed(ActionEvent e) {
                 int selectedRowIndex = View.this.productTable.getSelectedRow();
                 if (selectedRowIndex != -1) {
-                    Integer productId = (Integer)View.this.productTableModel.getValueAt(selectedRowIndex, 0);
-                    String currentName = (String)View.this.productTableModel.getValueAt(selectedRowIndex, 1);
-                    Integer currentStock = (Integer)View.this.productTableModel.getValueAt(selectedRowIndex, 2);
+                    Integer productId = (Integer) View.this.productTable.getValueAt(selectedRowIndex, 0);
+                    String currentName = (String) View.this.productTable.getValueAt(selectedRowIndex, 1);
+                    Integer currentStock = (Integer) View.this.productTable.getValueAt(selectedRowIndex, 2);
                     String updatedName = JOptionPane.showInputDialog(View.this.productFrame, "Enter updated name:", currentName);
                     String updatedStock = JOptionPane.showInputDialog(View.this.productFrame, "Enter updated stock:", currentStock);
-                    View.this.productTableModel.setValueAt(updatedName, selectedRowIndex, 1);
-                    View.this.productTableModel.setValueAt(updatedStock, selectedRowIndex, 2);
-                    ProductDAO pr = new ProductDAO();
-                    pr.update("name", updatedName, productId);
-                    pr.update("stock", updatedStock, productId);
+                    View.this.productTable.setValueAt(updatedName, selectedRowIndex, 1);
+                    View.this.productTable.setValueAt(updatedStock, selectedRowIndex, 2);
+                    ProductBLL pr = new ProductBLL();
+                    pr.updateClient("name", updatedName, productId);
+                    pr.updateClient("stock", updatedStock, productId);
+                    List<Products> prodList1 = productbll.findAll();
+                    JTable aux2 = tableR2.create1(prodList1);
+                    productTable.setModel(aux2.getModel());
                     JOptionPane.showMessageDialog(View.this.productFrame, "Update produs done!");
                 } else {
                     JOptionPane.showMessageDialog(View.this.productFrame, "Va rog selectati un produs!");
                 }
-
             }
         });
         productButtonPanel.add(editProductButton);
@@ -207,10 +208,13 @@ public class View {
             public void actionPerformed(ActionEvent e) {
                 int selectedRowIndex = View.this.productTable.getSelectedRow();
                 if (selectedRowIndex != -1) {
-                    Integer productId = (Integer)View.this.productTableModel.getValueAt(selectedRowIndex, 0);
-                    View.this.productTableModel.removeRow(selectedRowIndex);
-                    ProductDAO pr = new ProductDAO();
-                    pr.delete(productId);
+                    Integer productId = (Integer) View.this.productTable.getValueAt(selectedRowIndex, 0);
+                   // View.this.productTable.remove(selectedRowIndex);
+                    ProductBLL pr = new ProductBLL();
+                    pr.deleteProduct(productId);
+                    List<Products> prodList1 = productbll.findAll();
+                    JTable aux2 = tableR2.create1(prodList1);
+                    productTable.setModel(aux2.getModel());
                     JOptionPane.showMessageDialog(View.this.productFrame, "Stergerea produsului a fost facuta cu succes!");
                 } else {
                     JOptionPane.showMessageDialog(View.this.productFrame, "Va rog selectati un produs!");
@@ -225,22 +229,6 @@ public class View {
         this.orderFrame.setSize(800, 600);
         JPanel orderPanel = new JPanel();
 
-       /* this.orderTable = new JTable();
-        Reflection tableR1 = new Reflection();
-
-        OrderDAO orderDao = new OrderDAO();
-        List<Orders> orderList1 = orderDao.findAll();
-        JTable aux1 = tableR1.create1(orderList1);
-
-        //this.clientTableModel = new DefaultTableModel(columns, clientList1.toArray());
-        orderTable.setModel(aux1.getModel());*/
-
-        //this.orderTableModel.addColumn("id");
-        //this.orderTableModel.addColumn("quantity");
-        //this.orderTableModel.addColumn("idClient");
-        //this.orderTableModel.addColumn("idProduct");
-        //this.orderTable = new JTable(this.orderTableModel);
-
         ///fereastra noua pt orders
         this.order2Frame = new JFrame("Orders interface");
         this.order2Frame.setDefaultCloseOperation(3);
@@ -248,7 +236,7 @@ public class View {
 
         this.orderTable = new JTable();
         Reflection tableR1 = new Reflection();
-        OrderDAO orderDao = new OrderDAO();
+        OrderBLL orderDao = new OrderBLL();
         List<Orders> orderList1 = orderDao.findAll();
         JTable aux1 = tableR1.create1(orderList1);
         orderTable.setModel(aux1.getModel());
@@ -263,16 +251,16 @@ public class View {
         final List<Integer> idClients = new ArrayList();
         final List<Integer> idProducts = new ArrayList();
         List<Integer> quantityO = new ArrayList();
-        final ProductDAO pr = new ProductDAO();
-        ClientDAO cl = new ClientDAO();
+        final ProductBLL pr = new ProductBLL();
+        ClientBLL cl = new ClientBLL();
         List<Clients> clientList = cl.findAll();
         List<Products> productList = pr.findAll();
 
         clientComboBox.addItem("None");
         Iterator var25 = clientList.iterator();
 
-        while(var25.hasNext()) {
-            Clients clients = (Clients)var25.next();
+        while (var25.hasNext()) {
+            Clients clients = (Clients) var25.next();
             idClients.add(clients.getId());
             clientComboBox.addItem(clients.getName());
         }
@@ -280,8 +268,8 @@ public class View {
         productComboBox.addItem("None");
         var25 = productList.iterator();
 
-        while(var25.hasNext()) {
-            Products prod = (Products)var25.next();
+        while (var25.hasNext()) {
+            Products prod = (Products) var25.next();
             idProducts.add(prod.getId());
             quantityO.add(prod.getStock());
             productComboBox.addItem(prod.getName());
@@ -291,28 +279,26 @@ public class View {
         createOrderButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Integer quantity = Integer.valueOf(quantityTextField.getText());
-                Integer clientId = (Integer)idClients.get(clientComboBox.getSelectedIndex() - 1);
-                Integer productId = (Integer)idProducts.get(productComboBox.getSelectedIndex() - 1);
-                Products p = (Products)pr.findById(productId);
+                Integer clientId = (Integer) idClients.get(clientComboBox.getSelectedIndex() - 1);
+                Integer productId = (Integer) idProducts.get(productComboBox.getSelectedIndex() - 1);
+                Products p = (Products) pr.findById(productId);
                 if (p.getStock() - quantity >= 0) {
                     pr.decrementStock(quantity, p);
-                    OrderDAO ord = new OrderDAO();
+                    OrderBLL ord = new OrderBLL();
                     Orders o1 = new Orders();
                     o1.setQuantity(quantity);
                     o1.setIdClient(clientId);
                     o1.setIdProduct(productId);
-                    ord.insert(o1);
-                    //View.this.orderTableModel.addRow(new Object[]{View.this.orderTableModel.getRowCount() + 1, quantity, clientId, productId});
-
+                    ord.insertOrder(o1);
+                    List<Orders> orderList1 = orderDao.findAll();
+                    JTable aux1 = tableR1.create1(orderList1);
+                    orderTable.setModel(aux1.getModel());
 
                     //fereastra noua pt afisare
                     order2Frame.setVisible(true);
-
-
                 } else {
-                    JOptionPane.showMessageDialog((Component)null, "Stoc insuficient!", "Error", 0);
+                    JOptionPane.showMessageDialog((Component) null, "Stoc insuficient!", "Error", 0);
                 }
-
             }
         });
         JButton backButton3 = new JButton("Back");
@@ -372,6 +358,5 @@ public class View {
         orderButton.setBackground(new Color(164, 220, 213));
         this.startFrame.add(orderButton);
         this.startFrame.setVisible(true);
-
     }
 }

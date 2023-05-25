@@ -6,7 +6,7 @@ import model.Clients;
 import java.util.List;
 
 public class ClientBLL {
-    ClientDAO clientdao;
+    private ClientDAO clientdao = new ClientDAO();
 
     public void insertClient(Clients c) {
         clientdao.insert(c);

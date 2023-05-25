@@ -1,5 +1,6 @@
 package businessLayer;
 
+import dataAccessLayer.ClientDAO;
 import dataAccessLayer.ProductDAO;
 import model.Clients;
 import model.Products;
@@ -7,7 +8,8 @@ import model.Products;
 import java.util.List;
 
 public class ProductBLL {
-    ProductDAO productdao;
+     private ProductDAO productdao = new ProductDAO();
+
     public void insertProduct(Products p) {
         productdao.insert(p);
     }
