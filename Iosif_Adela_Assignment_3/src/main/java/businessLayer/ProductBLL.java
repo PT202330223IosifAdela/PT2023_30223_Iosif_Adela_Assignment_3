@@ -7,6 +7,9 @@ import model.Products;
 
 import java.util.List;
 
+/**
+ * 
+ */
 public class ProductBLL {
      private ProductDAO productdao = new ProductDAO();
 
