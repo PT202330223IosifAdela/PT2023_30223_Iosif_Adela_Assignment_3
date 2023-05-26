@@ -5,6 +5,12 @@ import model.Orders;
 
 import java.util.List;
 
+/**
+ * Aceasta clasa este necesara pentru a grupa toate metodele necesare implementarii operatiilor
+ * pentru comenzi
+ * apeleaza metode care deja implementeaza interogari pe baza de date
+ * este folosita mai departe in interfata
+ */
 public class OrderBLL {
     private OrderDAO orderdao = new OrderDAO();
 

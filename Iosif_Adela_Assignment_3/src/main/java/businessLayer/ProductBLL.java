@@ -8,7 +8,8 @@ import model.Products;
 import java.util.List;
 
 /**
- * 
+ * Apeleaza metodele din ProductDAO si AbstractDAO specifice produsului
+ * grupeaza toate metodele, este folosita in interfata
  */
 public class ProductBLL {
      private ProductDAO productdao = new ProductDAO();

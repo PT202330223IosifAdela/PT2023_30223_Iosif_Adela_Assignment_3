@@ -24,6 +24,10 @@ public class ProductDAO extends AbstractDAO<Products>{
         update("stock", p.getStock().toString(),p.getId());
     }
 
+    /**
+     * Creeaza interogarea specifica produsului, pentru baza de date
+     * @param t - inregistrarea care trebuie inserata in baza de date
+     */
     @Override
     public void insert(Products t) {
        Connection connection = ConnectionFactory.getConnection();

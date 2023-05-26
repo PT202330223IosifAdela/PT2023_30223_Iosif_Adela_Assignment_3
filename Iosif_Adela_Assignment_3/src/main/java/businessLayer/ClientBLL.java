@@ -5,6 +5,11 @@ import model.Clients;
 
 import java.util.List;
 
+/**
+ * construieste obiectul clientdao care este folosit in apelurile metodelor
+ * care serverc la implementarea operatiilor specifice unui client, dar deja implementate
+ * clasa este utilizata mai departe in interfata pentru legaturile la tabelele din baza de date
+ */
 public class ClientBLL {
     private ClientDAO clientdao = new ClientDAO();
 
